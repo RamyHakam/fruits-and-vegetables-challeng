@@ -1,5 +1,53 @@
 # 🍎🥕 Fruits and Vegetables
 
+# Produce Service
+
+A Symfony project  implementing Domain-Driven Design (DDD) for managing produce items (fruits and vegetables). The **Domain** layer encapsulates all business logic for products, while other layers (Application, Infrastructure, UI) provide ports, adapters, and interfaces.
+
+---
+
+## 📦 Prerequisites
+
+* Docker & Docker Compose
+* PHP 8.x & Composer (inside container)
+
+---
+
+## 🚀 Getting Started
+
+Use the provided Makefile to build, start containers, import data, flush Redis, and run tests.
+
+> **Usage**:
+>
+> 1. `make up` to build and start services.
+> 2. `make data-import` to load seed data.
+> 3. `make flush-redis` to clear cache.
+> 4. `make test` to run all unit tests.
+
+---
+
+## 🔌 API Endpoints
+
+Use the provided Postman collection
+
+* **GET** `/api/produce/{type}/{id}` — Retrieve produce by  type , Id , and optional unit conversion (grams/kilograms)
+* **GET** `/api/produce/{type}` — Retrieve produce by type with optional filters and optional unit conversion (grams/kilograms).
+* **POST** `/api/produce/{type}` — Add list of produces to the collection.
+* **DELETE** `/api/produce/{type}/{id}` — Remove a produce by ID.
+
+---
+
+## 🏗️ Architectural Highlights
+
+* **DDD**: Clear separation between Domain, Application, Infrastructure, and UI layers.
+* **Clean Architecture**: Ports & Adapters keep business logic framework-agnostic.
+* **KISS, DRY, YAGNI, SOLID**: Emphasis on simplicity, reusability, and maintainability.
+* **Redis Caching**: Fast access to current lowest prices.
+* **FrankenPHP + Caddy**: Single-runtime HTTP server, no PHP-FPM or Nginx required.
+
+*Happy coding!* 🚀
+
+
 ## 🎯 Goal
 We want to build a service which will take a `request.json` and:
 * Process the file and create two separate collections for `Fruits` and `Vegetables`

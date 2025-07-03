@@ -7,135 +7,78 @@ use App\Application\Service\ProduceImporter;
 use App\Application\Service\ProduceService;
 use App\Domain\Enum\ProduceType;
 use App\Domain\Enum\ProduceUnitType;
-use App\Domain\Factory\ProduceFactory;
-use App\Domain\Model\Produce;
-use App\Domain\ValueObject\Quantity;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProduceImporterTest extends TestCase
 {
+    private ValidatorInterface $validator;
+    private ProduceService $produceService;
     private ProduceImporter $importer;
-    private SerializerInterface|MockObject $serializer;
-    private ValidatorInterface|MockObject $validator;
-    private ProduceFactory|MockObject $factory;
-    private ProduceService|MockObject $service;
 
     protected function setUp(): void
     {
-        parent::setUp();
-
-        $this->serializer = $this->createMock(SerializerInterface::class);
-        $this->validator  = $this->createMock(ValidatorInterface::class);
-        $this->factory    = $this->createMock(ProduceFactory::class);
-       $this->service    = $this->createMock(ProduceService::class);
-
+        $this->validator = $this->createMock(ValidatorInterface::class);
+        $this->produceService = $this->createMock(ProduceService::class);
         $this->importer = new ProduceImporter(
-            $this->serializer,
             $this->validator,
-            $this->factory,
-            $this->service
+            $this->produceService
         );
     }
 
-    public function testImportAllValid(): void
+    public function testImportWithNoDtos(): void
     {
-        $json = '[{"id":1,"name":"Apple","type":"fruit","quantity":1,"unit":"kg"}]';
-        $dto = new ProduceDTO(
-            id: 1,
-            name: 'Apple',
-            type: ProduceType::FRUIT,
-            quantity: 1,
-            unit: ProduceUnitType::KILOGRAM
-        );
+        $result = $this->importer->import([]);
+        $this->assertSame(0, $result->importedCount);
+        $this->assertEmpty($result->errors);
+    }
 
-        $this->serializer
-            ->expects($this->once())
-            ->method('deserialize')
-            ->with($json, ProduceDTO::class . '[]', 'json')
-            ->willReturn([$dto]);
+    public function testImportValidDto(): void
+    {
+        $dto = new ProduceDTO(id:1, name:'Apple', type:ProduceType::FRUIT, quantity:5, unit:ProduceUnitType::KILOGRAM);
+        $violations = new ConstraintViolationList();
+        $this->validator->method('validate')->with($dto)->willReturn($violations);
 
-        $this->validator
-            ->method('validate')
-            ->with($dto)
-            ->willReturn(new ConstraintViolationList());
+        // Expect service add called once
+        $this->produceService->expects($this->once())->method('add')->with($dto);
 
-        $produce = new Produce(
-            id: $dto->id,
-            name: $dto->name,
-            type: $dto->type,
-            quantity: new Quantity($dto->quantity, $dto->unit),
-            produceUnitType: $dto->unit
-        );
-        $this->factory
-            ->expects($this->once())
-            ->method('fromDto')
-            ->with($dto)
-            ->willReturn($produce);
-
-        $this->service
-            ->expects($this->once())
-            ->method('add')
-            ->with($produce);
-
-        $result = $this->importer->import($json);
-
+        $result = $this->importer->import([$dto]);
         $this->assertSame(1, $result->importedCount);
         $this->assertEmpty($result->errors);
     }
 
-    public function testImportWithViolationsCollectsErrors(): void
+    public function testImportInvalidDto(): void
     {
-        $json = '[]';
-        $dto = new ProduceDTO(
-            id: 2,
-            name: '',
-            type: ProduceType::FRUIT,
-            quantity: -5,
-            unit: ProduceUnitType::GRAM
+        $dto = new ProduceDTO(id:2, name:'', type:ProduceType::FRUIT, quantity:-1, unit:ProduceUnitType::KILOGRAM);
+        // Create violations list
+        $violation1 = new ConstraintViolation(
+            message: 'Name should not be blank',
+            messageTemplate: '',
+            parameters: [],
+            root: null,
+            propertyPath: 'name',
+            invalidValue: ''
         );
-
-        $this->serializer
-            ->method('deserialize')
-            ->willReturn([$dto]);
-
-        $violation = new ConstraintViolation(
-            'Cannot be blank', null, [], '', 'name', ''
+        $violation2 = new ConstraintViolation(
+            message: 'Quantity must be positive',
+            messageTemplate: '',
+            parameters: [],
+            root: null,
+            propertyPath: 'quantity',
+            invalidValue: -1
         );
-        $this->validator
-            ->method('validate')
-            ->with($dto)
-            ->willReturn(new ConstraintViolationList([$violation]));
+        $violations = new ConstraintViolationList([$violation1, $violation2]);
+        $this->validator->method('validate')->with($dto)->willReturn($violations);
 
-        $this->factory
-            ->expects($this->never())
-            ->method('fromDto');
+        // Service add not called
+        $this->produceService->expects($this->never())->method('add');
 
-        $this->service
-            ->expects($this->never())
-            ->method('add');
-
-        $result = $this->importer->import($json);
-
+        $result = $this->importer->import([$dto]);
         $this->assertSame(0, $result->importedCount);
-        $this->assertNotEmpty($result->errors);
-        $this->assertStringContainsString('name: Cannot be blank', $result->errors[0]);
-    }
-
-    public function testImportThrowsOnParseError(): void
-    {
-        $this->serializer
-            ->method('deserialize')
-            ->willThrowException(new RuntimeException('Parse error'));
-
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Parse error');
-
-        $this->importer->import('{ invalid json }');
+        $this->assertCount(2, $result->errors);
+        $this->assertStringContainsString('[2] -> name: Name should not be blank', $result->errors[0]);
+        $this->assertStringContainsString('[2] -> quantity: Quantity must be positive', $result->errors[1]);
     }
 }

@@ -5,8 +5,10 @@ namespace App\Infrastructure\Persistence;
 use App\Application\Port\ProduceStorageInterface;
 use App\Domain\Enum\ProduceType;
 use App\Domain\Model\ProduceCollectionInterface;
+use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 
-final  readonly class InMemoryProduceStorage implements ProduceStorageInterface
+#[AsAlias(ProduceStorageInterface::class ,when: 'test')]
+final  class InMemoryProduceStorage implements ProduceStorageInterface
 {
     private array $store = [];
 
@@ -17,6 +19,6 @@ final  readonly class InMemoryProduceStorage implements ProduceStorageInterface
 
     public function load(ProduceType $produceType): ?ProduceCollectionInterface
     {
-        return $this->store[$type->value] ?? null;
+        return $this->store[$produceType->value] ?? null;
     }
 }

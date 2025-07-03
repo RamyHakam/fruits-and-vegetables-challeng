@@ -28,7 +28,7 @@ class ProduceFactoryTest extends TestCase
             unit: ProduceUnitType::KILOGRAM
         );
 
-        $produce = $this->factory->fromDto($dto);
+        $produce = ProduceFactory::create(...$dto->toArray());
 
         $this->assertEquals(42, $produce->getId());
         $this->assertSame('TestFruit', $produce->getName());
@@ -37,8 +37,7 @@ class ProduceFactoryTest extends TestCase
         $quantity = $produce->getQuantity();
 
         $this->assertSame(2500.0, $quantity->toGrams());
-        $this->assertSame(2.5, $quantity->amount);
-        $this->assertSame('kg', $quantity->unit->value);
+        $this->assertSame(2500.0, $quantity->grams);
     }
 
     public function testFromDtoWithGrams(): void
@@ -51,7 +50,7 @@ class ProduceFactoryTest extends TestCase
             unit: ProduceUnitType::GRAM
         );
 
-        $produce = $this->factory->fromDto($dto);
+        $produce = $this->factory::create(...$dto->toArray());
 
         $this->assertEquals(7, $produce->getId());
         $this->assertSame('TestVeg', $produce->getName());
@@ -60,7 +59,5 @@ class ProduceFactoryTest extends TestCase
         $quantity = $produce->getQuantity();
 
         $this->assertSame(500.0, $quantity->toGrams());
-        $this->assertSame(500.0, $quantity->amount);
-        $this->assertSame('g', $quantity->unit->value);
     }
 }

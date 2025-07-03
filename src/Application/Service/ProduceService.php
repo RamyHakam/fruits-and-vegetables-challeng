@@ -9,7 +9,6 @@ use App\Domain\Enum\ProduceType;
 use App\Domain\Enum\ProduceUnitType;
 use App\Domain\Model\Produce;
 use App\Domain\Model\ProduceCollection;
-use App\Infrastructure\Persistence\RedisProduceStorage;
 
 
 final  readonly  class ProduceService
@@ -39,11 +38,11 @@ final  readonly  class ProduceService
         return $result;
     }
 
-    public function list(ProduceType $type, ProduceListFiltersDTO $filtersDTO , ProduceUnitType $returnUnit ): array
+    public function list(ProduceType $type, ProduceListFiltersDTO $filtersDTO , ProduceUnitType $returnUnit = ProduceUnitType::GRAM   ): array
     {
         $collection = $this->storage->load($type) ?? new ProduceCollection($type);
         $predicate = $this->buildFilterPredicate($filtersDTO, $returnUnit);
-        return $collection->search($predicate);
+        return $collection->list($predicate);
     }
 
     public function getOne(ProduceType $type, int $id): ?Produce

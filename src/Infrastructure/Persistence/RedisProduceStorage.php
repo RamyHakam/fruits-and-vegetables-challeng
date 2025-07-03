@@ -9,7 +9,7 @@ use Redis;
 use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-#[AsAlias(ProduceStorageInterface::class)]
+#[AsAlias(ProduceStorageInterface::class, when: ['dev', 'prod'])]
 final  readonly class RedisProduceStorage  implements ProduceStorageInterface
 {
     public function __construct(

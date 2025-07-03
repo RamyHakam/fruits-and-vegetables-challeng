@@ -23,7 +23,7 @@ final  readonly class ProduceImporter
             if (count($violations) > 0) {
                 foreach ($violations as $v) {
                     $errors[] = sprintf(
-                        '[%s] %s: %s',
+                        '[%s] -> %s: %s',
                         $dto->id ?? 'n/a',
                         $v->getPropertyPath(),
                         $v->getMessage()

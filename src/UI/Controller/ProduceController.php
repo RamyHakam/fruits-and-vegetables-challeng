@@ -55,7 +55,7 @@ final  class ProduceController extends AbstractController
         methods: ['GET'])]
     public function list(
         ProduceType                             $type,
-        #[MapQueryString] ProduceListFiltersDTO $filters= new ProduceListFiltersDTO(),
+        #[MapQueryString]  ProduceListFiltersDTO $filters = new ProduceListFiltersDTO(),
         #[MapQueryParameter(name: 'returnUnit', validationFailedStatusCode: Response::HTTP_UNPROCESSABLE_ENTITY)]
         ?ProduceUnitType                        $returnUnit = ProduceUnitType::GRAM
     ): JsonResponse

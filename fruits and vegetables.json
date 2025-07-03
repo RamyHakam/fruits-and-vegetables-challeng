@@ -1,0 +1,146 @@
+{
+	"info": {
+		"_postman_id": "9ca9a029-ab6f-4d89-b31c-ba4f5802c81e",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2851743"
+	},
+	"item": [
+		{
+			"name": "List Request with fitler",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/produce/fruit?minQuantity=37000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"produce",
+						"fruit"
+					],
+					"query": [
+						{
+							"key": "minQuantity",
+							"value": "37000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/produce/fruit?returnUnit=kg",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"produce",
+						"fruit"
+					],
+					"query": [
+						{
+							"key": "returnUnit",
+							"value": "kg"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Request",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n    \"id\": 2,\n    \"name\": \"Apples\",\n    \"type\": \"fruit\",\n    \"quantity\": 20,\n    \"unit\": \"kg\"\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost/api/produce/fruit/12",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"produce",
+						"fruit",
+						"12"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n    \"id\": 2,\n    \"name\": \"Apples\",\n    \"type\": \"fruit\",\n    \"quantity\": 20,\n    \"unit\": \"kg\"\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost/api/produce",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"produce"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Request",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://localhost/api/produce/fruit/14",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"produce",
+						"fruit",
+						"14"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
