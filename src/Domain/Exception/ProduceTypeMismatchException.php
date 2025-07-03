@@ -14,5 +14,4 @@ class ProduceTypeMismatchException extends DomainException
             $actual->value
         ));
     }
-
 }

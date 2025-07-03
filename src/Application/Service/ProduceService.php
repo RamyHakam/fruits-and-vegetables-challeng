@@ -4,6 +4,7 @@ namespace App\Application\Service;
 
 use App\Application\DTO\ProduceDTO;
 use App\Application\DTO\ProduceListFiltersDTO;
+use App\Application\Port\ProduceStorageInterface;
 use App\Domain\Enum\ProduceType;
 use App\Domain\Enum\ProduceUnitType;
 use App\Domain\Model\Produce;
@@ -14,7 +15,7 @@ use App\Infrastructure\Persistence\RedisProduceStorage;
 final  readonly  class ProduceService
 {
     public function __construct(
-        private RedisProduceStorage $storage,
+        private ProduceStorageInterface $storage,
     ) {}
 
     public function add(ProduceDTO $produceDTO): void
