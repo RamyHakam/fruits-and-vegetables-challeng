@@ -4,23 +4,31 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.0.2",
+        "php": ">=8.2.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "sensio/framework-extra-bundle": "^6.2",
-        "symfony/console": "6.0.*",
-        "symfony/dotenv": "6.0.*",
+        "phpdocumentor/reflection-docblock": "^5.6",
+        "phpstan/phpdoc-parser": "^2.1",
+        "symfony/console": "7.3.*",
+        "symfony/dotenv": "7.3.*",
         "symfony/flex": "^2",
-        "symfony/framework-bundle": "6.0.*",
-        "symfony/runtime": "6.0.*",
-        "symfony/yaml": "6.0.*"
+        "symfony/framework-bundle": "7.3.*",
+        "symfony/json-streamer": "7.3.*",
+        "symfony/property-access": "7.3.*",
+        "symfony/property-info": "7.3.*",
+        "symfony/runtime": "7.3.*",
+        "symfony/serializer": "7.3.*",
+        "symfony/validator": "7.3.*",
+        "symfony/yaml": "7.3.*",
+      "ext-redis": "*"
     },
     "require-dev": {
+        "dg/bypass-finals": "^1.9",
         "phpunit/phpunit": "^9.5",
-        "symfony/browser-kit": "6.0.*",
-        "symfony/css-selector": "6.0.*",
+        "symfony/browser-kit": "7.3.*",
+        "symfony/css-selector": "7.3.*",
         "symfony/maker-bundle": "^1.38",
-        "symfony/phpunit-bridge": "^6.0"
+        "symfony/phpunit-bridge": "^7.3"
     },
     "config": {
         "allow-plugins": {
@@ -54,8 +62,6 @@
     },
     "scripts": {
         "auto-scripts": {
-            "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"
@@ -70,7 +76,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "6.0.*"
+            "require": "7.3.*"
         }
     }
 }

@@ -1,0 +1,10 @@
+services:
+    RedisStorageService:
+      class: Redis
+      factory: '@App\Infrastructure\Factory\RedisFactory'
+
+when@test:
+    services:
+        RedisStorageService:
+          class: Redis
+          public: true

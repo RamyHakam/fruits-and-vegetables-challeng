@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: produce_app
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      APP_ENV: dev
+      APP_DEBUG: 1
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      IMPORT_FILE:  /request.json
+    depends_on:
+      - redis
+
+  redis:
+    container_name: produce_redis
+    image: redis:7-alpine
+
