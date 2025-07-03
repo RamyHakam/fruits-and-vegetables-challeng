@@ -2,12 +2,15 @@
 
 namespace App\Infrastructure\Persistence;
 
+use App\Application\Port\ProduceStorageInterface;
 use App\Domain\Enum\ProduceType;
 use App\Domain\Model\ProduceCollectionInterface;
 use Redis;
+use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final  readonly class RedisProduceStorage
+#[AsAlias(ProduceStorageInterface::class)]
+final  readonly class RedisProduceStorage  implements ProduceStorageInterface
 {
     public function __construct(
         #[Autowire(service: 'RedisStorageService')]
@@ -20,9 +23,9 @@ final  readonly class RedisProduceStorage
         $this->redis->set($key, serialize($collection));
     }
 
-    public function load(ProduceType $type): ?ProduceCollectionInterface
+    public function load(ProduceType $produceType): ?ProduceCollectionInterface
     {
-        $data = $this->redis->get($this->key($type));
+        $data = $this->redis->get($this->key($produceType));
         return $data ? unserialize($data) : null;
     }
 
